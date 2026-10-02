@@ -1,6 +1,7 @@
 package com.ntd7505.stayhub.mapper;
 
 import com.ntd7505.stayhub.dto.request.UserRegisterRequest;
+import com.ntd7505.stayhub.dto.response.AdminUserDetailResponse;
 import com.ntd7505.stayhub.dto.response.UserResponse;
 import com.ntd7505.stayhub.entity.User;
 import org.mapstruct.Mapper;
@@ -20,4 +21,6 @@ public interface UserMapper {
   User toUser(UserRegisterRequest request);
 
   UserResponse toUserResponse(User user);
+
+  AdminUserDetailResponse toAdminUserDetailResponse(User user);
 }

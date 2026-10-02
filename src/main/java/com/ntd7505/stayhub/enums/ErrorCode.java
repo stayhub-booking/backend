@@ -19,6 +19,16 @@ public enum ErrorCode {
 
   USER_ROLE_ALREADY_EXISTS(HttpStatus.CONFLICT, "USER_409_003", "User already has this role"),
 
+  INVALID_STATUS_TRANSITION(HttpStatus.CONFLICT, "USER_409_004", "Invalid user status transition"),
+  SELF_STATUS_CHANGE_FORBIDDEN(
+      HttpStatus.CONFLICT, "USER_409_005", "Administrators cannot disable or ban themselves"),
+  ROLE_NOT_ACTIVE(HttpStatus.CONFLICT, "ROLE_409_001", "Role is not active"),
+  LAST_ADMIN_ROLE_REQUIRED(
+      HttpStatus.CONFLICT,
+      "ROLE_409_002",
+      "The last active administrator must keep the ADMIN role"),
+  ACCESS_DENIED(HttpStatus.FORBIDDEN, "AUTH_403_002", "Access denied"),
+
   INTERNAL_SERVER_ERROR(
       HttpStatus.INTERNAL_SERVER_ERROR, "COMMON_500_001", "An unexpected error occurred"),
   ROLE_NOT_FOUND(HttpStatus.NOT_FOUND, "ROLE_404_001", "Role not found"),

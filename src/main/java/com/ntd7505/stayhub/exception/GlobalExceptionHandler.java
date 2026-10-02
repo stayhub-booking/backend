@@ -10,10 +10,12 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @Slf4j
 @RestControllerAdvice
@@ -96,5 +98,17 @@ public class GlobalExceptionHandler {
     ErrorCode errorCode = ErrorCode.INTERNAL_SERVER_ERROR;
     ApiResponse<Void> response = ApiResponse.error(errorCode);
     return ResponseEntity.status(errorCode.getHttpStatus()).body(response);
+  }
+
+  @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+  public ResponseEntity<ApiResponse<Void>> handleTypeMismatch(
+      MethodArgumentTypeMismatchException exception) {
+    return ResponseEntity.badRequest().body(ApiResponse.error(ErrorCode.INVALID_REQUEST));
+  }
+
+  @ExceptionHandler(AccessDeniedException.class)
+  public ResponseEntity<ApiResponse<Void>> handleAccessDenied(AccessDeniedException exception) {
+    return ResponseEntity.status(ErrorCode.ACCESS_DENIED.getHttpStatus())
+        .body(ApiResponse.error(ErrorCode.ACCESS_DENIED));
   }
 }

@@ -502,7 +502,7 @@ GET /api/v1/admin/users?page=0&size=20&status=ACTIVE&role=CUSTOMER&sort=createdA
 - **Method:** `GET`
 - **URL:** `/api/v1/admin/users/{userId}`
 - **Quyền:** `ADMIN`
-- **Trạng thái:** `PLANNED`
+- **Trạng thái:** `IMPLEMENTED` (source/build verified; chưa kiểm thử HTTP/database)
 
 #### Path parameter
 
@@ -545,7 +545,7 @@ GET /api/v1/admin/users?page=0&size=20&status=ACTIVE&role=CUSTOMER&sort=createdA
 - **Method:** `PATCH`
 - **URL:** `/api/v1/admin/users/{userId}/status`
 - **Quyền:** `ADMIN`
-- **Trạng thái:** `PLANNED`
+- **Trạng thái:** `IMPLEMENTED` (source/build verified; chưa kiểm thử HTTP/database)
 
 #### Request body
 
@@ -593,13 +593,16 @@ GET /api/v1/admin/users?page=0&size=20&status=ACTIVE&role=CUSTOMER&sort=createdA
 | `404` | `USER_404_001` | Không tìm thấy user |
 | `409` | `USER_409_004` | Chuyển trạng thái không hợp lệ |
 | `409` | `USER_409_005` | Admin cố vô hiệu hóa hoặc ban chính mình |
+| `409` | `ROLE_409_002` | Thao tác sẽ vô hiệu hóa ADMIN active cuối cùng |
 
 #### Business rules
 
 1. Admin không được đổi chính mình sang `INACTIVE` hoặc `BANNED`.
 2. Không cập nhật database nếu status mới giống status hiện tại.
-3. `reason` phải được ghi log audit. Schema hiện chưa có bảng audit; phải bổ sung persistence hoặc chốt phương án logging trước khi triển khai endpoint.
+3. Audit dùng application log `ADMIN_USER_STATUS_CHANGED`, ghi actor UUID, user UUID, status trước/sau và reason sau khi transaction commit. Chưa có bảng audit; thời gian lưu audit phụ thuộc cấu hình lưu log.
 4. Khi có refresh token, chuyển user khỏi `ACTIVE` phải thu hồi toàn bộ phiên.
+5. Không được vô hiệu hóa ADMIN active cuối cùng. Thay đổi role/status khóa bản ghi role ADMIN để tuần tự hóa kiểm tra này.
+6. Cấp/rotate refresh token và đổi status cùng khóa user trước khi thao tác token, tránh token mới lọt qua lần thu hồi đồng thời. Access token JWT đã cấp chưa bị thu hồi tức thời; nó còn hiệu lực tới khi hết hạn (hiện tại 15 phút).
 
 ---
 
@@ -608,7 +611,7 @@ GET /api/v1/admin/users?page=0&size=20&status=ACTIVE&role=CUSTOMER&sort=createdA
 - **Method:** `PUT`
 - **URL:** `/api/v1/admin/users/{userId}/roles`
 - **Quyền:** `ADMIN`
-- **Trạng thái:** `PLANNED`
+- **Trạng thái:** `IMPLEMENTED` (source/build verified; chưa kiểm thử HTTP/database)
 - **Mô tả:** Thay thế toàn bộ role hiện tại bằng tập `roleKeys` trong request.
 
 #### Request body
@@ -664,7 +667,7 @@ GET /api/v1/admin/users?page=0&size=20&status=ACTIVE&role=CUSTOMER&sort=createdA
 - **Method:** `GET`
 - **URL:** `/api/v1/admin/roles`
 - **Quyền:** `ADMIN`
-- **Trạng thái:** `PLANNED`
+- **Trạng thái:** `IMPLEMENTED` (source/build verified; chưa kiểm thử HTTP/database)
 
 #### Query parameters
 
@@ -803,7 +806,7 @@ Tên DTO có thể điều chỉnh theo convention package, nhưng field và JSO
 - [ ] Implement user list/filter/page.
 - [ ] Implement user detail.
 - [ ] Implement status transition.
-- [ ] Chốt nơi lưu audit reason trước khi implement status update.
+- [x] Audit status update dùng application log sau commit (chưa có bảng audit).
 - [ ] Implement replace roles.
 - [ ] Implement role list.
 
