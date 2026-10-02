@@ -11,7 +11,8 @@ public enum ResponseCode {
 
   USER_CREATED(HttpStatus.CREATED, "USER_201_001", "User created successfully"),
 
-  USER_RETRIEVED(HttpStatus.OK, "USER_200_001", "User retrieved successfully");
+  USER_RETRIEVED(HttpStatus.OK, "USER_200_001", "User retrieved successfully"),
+  LOGIN_SUCCESS(HttpStatus.OK, "AUTH_200_001", "Login successful");
 
   private final HttpStatus httpStatus;
   private final String code;
