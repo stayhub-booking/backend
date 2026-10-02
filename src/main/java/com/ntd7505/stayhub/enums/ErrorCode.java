@@ -21,7 +21,12 @@ public enum ErrorCode {
 
   INTERNAL_SERVER_ERROR(
       HttpStatus.INTERNAL_SERVER_ERROR, "COMMON_500_001", "An unexpected error occurred"),
-  ROLE_NOT_FOUND(HttpStatus.NOT_FOUND, "ROLE_404_001", "Role not found");
+  ROLE_NOT_FOUND(HttpStatus.NOT_FOUND, "ROLE_404_001", "Role not found"),
+  INVALID_CREDENTIALS(HttpStatus.UNAUTHORIZED, "AUTH_401_001", "Invalid email or password"),
+
+  ACCOUNT_NOT_ACTIVE(HttpStatus.FORBIDDEN, "AUTH_403_001", "Account is not active"),
+  INVALID_REFRESH_TOKEN(
+      HttpStatus.UNAUTHORIZED, "AUTH_401_003", "Refresh token is invalid or expired");
 
   private final HttpStatus httpStatus;
   private final String code;
