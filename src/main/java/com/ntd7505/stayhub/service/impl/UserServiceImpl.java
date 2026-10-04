@@ -11,6 +11,7 @@ import com.ntd7505.stayhub.mapper.UserMapper;
 import com.ntd7505.stayhub.repository.RoleRepository;
 import com.ntd7505.stayhub.repository.UserRepository;
 import com.ntd7505.stayhub.service.UserService;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -54,5 +55,14 @@ public class UserServiceImpl implements UserService {
     User savedUser = userRepository.save(user);
 
     return userMapper.toUserResponse(savedUser);
+  }
+
+  @Override
+  public UserResponse getMyInfo(UUID userId) {
+    User user =
+        userRepository
+            .findUserById(userId)
+            .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+    return userMapper.toUserResponse(user);
   }
 }

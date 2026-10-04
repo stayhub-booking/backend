@@ -4,6 +4,8 @@ import com.ntd7505.stayhub.dto.request.UpdateUserRolesRequest;
 import com.ntd7505.stayhub.dto.request.UpdateUserStatusRequest;
 import com.ntd7505.stayhub.dto.response.AdminUserDetailResponse;
 import com.ntd7505.stayhub.dto.response.ApiResponse;
+import com.ntd7505.stayhub.dto.response.PageResponse;
+import com.ntd7505.stayhub.dto.response.UserResponse;
 import com.ntd7505.stayhub.dto.response.UserRolesResponse;
 import com.ntd7505.stayhub.dto.response.UserStatusResponse;
 import com.ntd7505.stayhub.enums.ResponseCode;
@@ -11,6 +13,10 @@ import com.ntd7505.stayhub.service.AdminUserService;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -52,5 +58,15 @@ public class AdminUserManagementController {
         ApiResponse.success(
             ResponseCode.USER_STATUS_UPDATED,
             adminUserService.updateStatus(actorId, userId, request)));
+  }
+
+  @GetMapping
+  public ResponseEntity<ApiResponse<PageResponse<UserResponse>>> getUsers(
+      @ParameterObject
+          @PageableDefault(page = 0, size = 20, sort = "createdAt", direction = Sort.Direction.DESC)
+          Pageable pageable) {
+    PageResponse<UserResponse> result = adminUserService.getUsers(pageable);
+
+    return ResponseEntity.ok(ApiResponse.success(ResponseCode.USERS_RETRIEVED, result));
   }
 }

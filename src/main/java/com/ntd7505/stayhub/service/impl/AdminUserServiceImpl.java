@@ -3,7 +3,9 @@ package com.ntd7505.stayhub.service.impl;
 import com.ntd7505.stayhub.dto.request.UpdateUserRolesRequest;
 import com.ntd7505.stayhub.dto.request.UpdateUserStatusRequest;
 import com.ntd7505.stayhub.dto.response.AdminUserDetailResponse;
+import com.ntd7505.stayhub.dto.response.PageResponse;
 import com.ntd7505.stayhub.dto.response.RoleResponse;
+import com.ntd7505.stayhub.dto.response.UserResponse;
 import com.ntd7505.stayhub.dto.response.UserRolesResponse;
 import com.ntd7505.stayhub.dto.response.UserStatusResponse;
 import com.ntd7505.stayhub.entity.Role;
@@ -19,11 +21,17 @@ import com.ntd7505.stayhub.service.AdminUserService;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +43,9 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 @Slf4j
 @PreAuthorize("hasRole('ADMIN')")
 public class AdminUserServiceImpl implements AdminUserService {
+
+  private static final Set<String> ALLOWED_USER_SORT_FIELDS =
+      Set.of("createdAt", "updatedAt", "email", "fullName");
   private final UserRepository userRepository;
   private final RoleRepository roleRepository;
   private final RefreshTokenRepository refreshTokenRepository;
@@ -131,6 +142,65 @@ public class AdminUserServiceImpl implements AdminUserService {
     userRepository.flush();
     auditStatusAfterCommit(actorId, userId, previous, next, request.reason());
     return new UserStatusResponse(user.getId(), next, user.getUpdatedAt());
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public PageResponse<UserResponse> getUsers(Pageable pageable) {
+    validatePageable(pageable);
+
+    Pageable safePageable = createSafePageable(pageable);
+
+    Page<UUID> idPage = userRepository.findAdminUserPageIds(safePageable);
+
+    if (idPage.isEmpty()) {
+      return new PageResponse<>(
+          List.of(),
+          idPage.getNumber(),
+          idPage.getSize(),
+          idPage.getTotalElements(),
+          idPage.getTotalPages());
+    }
+
+    Map<UUID, User> usersById =
+        userRepository.findAllWithRolesByIdIn(idPage.getContent()).stream()
+            .collect(Collectors.toMap(User::getId, Function.identity()));
+
+    List<UserResponse> items =
+        idPage.getContent().stream().map(usersById::get).map(userMapper::toUserResponse).toList();
+    return new PageResponse<>(
+        items,
+        idPage.getNumber(),
+        idPage.getSize(),
+        idPage.getTotalElements(),
+        idPage.getTotalPages());
+  }
+
+  private void validatePageable(Pageable pageable) {
+    if (pageable.getPageNumber() < 0) {
+      throw new AppException(ErrorCode.VALIDATION_ERROR);
+    }
+    if (pageable.getPageSize() < 1 || pageable.getPageSize() > 100) {
+      throw new AppException(ErrorCode.VALIDATION_ERROR);
+    }
+
+    for (Sort.Order order : pageable.getSort()) {
+      if (!ALLOWED_USER_SORT_FIELDS.contains(order.getProperty())) {
+        throw new AppException(ErrorCode.VALIDATION_ERROR);
+      }
+    }
+  }
+
+  private Pageable createSafePageable(Pageable pageable) {
+    Sort safeSort;
+
+    if (pageable.getSort().isUnsorted()) {
+      safeSort = Sort.by(Sort.Order.desc("createdAt"), Sort.Order.desc("id"));
+
+    } else {
+      safeSort = pageable.getSort().and(Sort.by(Sort.Order.asc("id")));
+    }
+    return PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), safeSort);
   }
 
   private void lockAdministratorRole() {
