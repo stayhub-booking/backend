@@ -12,10 +12,8 @@ import com.ntd7505.stayhub.mapper.UserMapper;
 import com.ntd7505.stayhub.repository.UserRepository;
 import com.ntd7505.stayhub.service.AuthService;
 import com.ntd7505.stayhub.service.JwtTokenService;
-
-import java.util.Locale;
-
 import com.ntd7505.stayhub.service.RefreshTokenService;
+import java.util.Locale;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,53 +23,62 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtTokenService jwtTokenService;
-    private final UserMapper userMapper;
-    private final RefreshTokenService refreshTokenService;
+  private final UserRepository userRepository;
+  private final PasswordEncoder passwordEncoder;
+  private final JwtTokenService jwtTokenService;
+  private final UserMapper userMapper;
+  private final RefreshTokenService refreshTokenService;
 
-    @Override
-    @Transactional
-    public AuthenticationResponse login(LoginRequest request) {
+  @Override
+  @Transactional
+  public AuthenticationResponse login(LoginRequest request) {
 
-        String email = request.email().trim().toLowerCase(Locale.ROOT);
+    String email = request.email().trim().toLowerCase(Locale.ROOT);
 
-        User user =
-                userRepository
-                        .findByEmailIgnoreCaseAndDeletedFalse(email)
-                        .orElseThrow(() -> new AppException(ErrorCode.INVALID_CREDENTIALS));
+    var credential =
+        userRepository
+            .findLoginCredentialByEmail(email)
+            .orElseThrow(() -> new AppException(ErrorCode.INVALID_CREDENTIALS));
 
-        if (!passwordEncoder.matches(request.password(), user.getPasswordHash())) {
-            throw new AppException(ErrorCode.INVALID_CREDENTIALS);
-        }
-
-        if (user.getStatus() != UserStatus.ACTIVE) {
-            throw new AppException(ErrorCode.ACCOUNT_NOT_ACTIVE);
-        }
-
-        var accessToken = jwtTokenService.generateToken(user);
-        var refreshToken = refreshTokenService.generateToken(user);
-
-        return new AuthenticationResponse(
-                accessToken.value(),
-                "Bearer",
-                accessToken.expiresIn(),
-                userMapper.toUserResponse(user),
-                refreshToken);
+    if (!passwordEncoder.matches(request.password(), credential.getPasswordHash())) {
+      throw new AppException(ErrorCode.INVALID_CREDENTIALS);
     }
 
-    @Override
-    @Transactional(noRollbackFor = RefreshTokenRejectedException.class)
-    public AuthenticationResponse refresh(RefreshTokenRequest request) {
-        var rotation = refreshTokenService.rotate(request.refreshToken());
-        var accessToken = jwtTokenService.generateToken(rotation.user());
+    User user =
+        userRepository
+            .lockByIdAndDeletedFalse(credential.getId())
+            .orElseThrow(() -> new AppException(ErrorCode.INVALID_CREDENTIALS));
 
-        return new AuthenticationResponse(
-                accessToken.value(),
-                "Bearer",
-                accessToken.expiresIn(),
-                userMapper.toUserResponse(rotation.user()),
-                rotation.refreshToken());
+    if (!user.getPasswordHash().equals(credential.getPasswordHash())) {
+      throw new AppException(ErrorCode.INVALID_CREDENTIALS);
     }
+
+    if (user.getStatus() != UserStatus.ACTIVE) {
+      throw new AppException(ErrorCode.ACCOUNT_NOT_ACTIVE);
+    }
+
+    var accessToken = jwtTokenService.generateToken(user);
+    var refreshToken = refreshTokenService.generateToken(user);
+
+    return new AuthenticationResponse(
+        accessToken.value(),
+        "Bearer",
+        accessToken.expiresIn(),
+        userMapper.toUserResponse(user),
+        refreshToken);
+  }
+
+  @Override
+  @Transactional(noRollbackFor = RefreshTokenRejectedException.class)
+  public AuthenticationResponse refresh(RefreshTokenRequest request) {
+    var rotation = refreshTokenService.rotate(request.refreshToken());
+    var accessToken = jwtTokenService.generateToken(rotation.user());
+
+    return new AuthenticationResponse(
+        accessToken.value(),
+        "Bearer",
+        accessToken.expiresIn(),
+        userMapper.toUserResponse(rotation.user()),
+        rotation.refreshToken());
+  }
 }

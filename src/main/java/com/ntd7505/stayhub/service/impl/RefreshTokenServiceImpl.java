@@ -8,9 +8,8 @@ import com.ntd7505.stayhub.enums.UserStatus;
 import com.ntd7505.stayhub.exception.AppException;
 import com.ntd7505.stayhub.exception.RefreshTokenRejectedException;
 import com.ntd7505.stayhub.repository.RefreshTokenRepository;
+import com.ntd7505.stayhub.repository.UserRepository;
 import com.ntd7505.stayhub.service.RefreshTokenService;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.LockModeType;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -29,17 +28,16 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
   private final RefreshTokenRepository refreshTokenRepository;
   private final JwtProperties properties;
-  private final EntityManager entityManager;
-
+  private final UserRepository userRepository;
   private final SecureRandom random = new SecureRandom();
 
   @Override
   @Transactional
-  public String generateToken(User user) {
-    User lockedUser = lockUser(user.getId());
+  public String generateToken(User lockedUser) {
     if (lockedUser.isDeleted() || lockedUser.getStatus() != UserStatus.ACTIVE) {
       throw new AppException(ErrorCode.ACCOUNT_NOT_ACTIVE);
     }
+
     UUID rootId = UUID.randomUUID();
 
     return saveToken(lockedUser, rootId, rootId, Instant.now().plus(properties.refreshTokenTtl()));
@@ -105,13 +103,9 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
   }
 
   private User lockUser(UUID userId) {
-    User user = entityManager.find(User.class, userId);
-    if (user == null) {
-      throw new RefreshTokenRejectedException();
-    }
-    // Reload even if login already loaded this user into the persistence context.
-    entityManager.refresh(user, LockModeType.PESSIMISTIC_WRITE);
-    return user;
+    return userRepository
+        .lockByIdAndDeletedFalse(userId)
+        .orElseThrow(RefreshTokenRejectedException::new);
   }
 
   private String hash(String rawToken) {

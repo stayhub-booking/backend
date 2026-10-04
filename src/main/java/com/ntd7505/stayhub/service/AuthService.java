@@ -6,7 +6,7 @@ import com.ntd7505.stayhub.dto.response.AuthenticationResponse;
 
 public interface AuthService {
 
-    AuthenticationResponse login(LoginRequest request);
+  AuthenticationResponse login(LoginRequest request);
 
-    AuthenticationResponse refresh(RefreshTokenRequest request);
+  AuthenticationResponse refresh(RefreshTokenRequest request);
 }
