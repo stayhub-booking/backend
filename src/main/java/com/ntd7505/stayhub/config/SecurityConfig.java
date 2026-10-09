@@ -33,6 +33,14 @@ public class SecurityConfig {
                         "/api/v1/auth/login",
                         "/api/v1/auth/refresh")
                     .permitAll()
+                    .requestMatchers(
+                        HttpMethod.GET,
+                        "/api/v1/cities",
+                        "/api/v1/amenities",
+                        "/api/v1/hotels",
+                        "/api/v1/hotels/*",
+                        "/api/v1/hotels/*/room-types")
+                    .permitAll()
                     .requestMatchers("/api/v1/admin/**")
                     .hasRole("ADMIN")
                     .anyRequest()
