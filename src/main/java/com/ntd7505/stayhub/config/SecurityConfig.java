@@ -43,6 +43,8 @@ public class SecurityConfig {
                     .permitAll()
                     .requestMatchers("/api/v1/admin/**")
                     .hasRole("ADMIN")
+                    .requestMatchers("/api/v1/owner/**")
+                    .hasRole("HOTEL_OWNER")
                     .anyRequest()
                     .authenticated())
         .oauth2ResourceServer(

@@ -5,6 +5,8 @@ import com.ntd7505.stayhub.dto.response.AdminHotelSummaryResponse;
 import com.ntd7505.stayhub.dto.response.HotelDetailResponse;
 import com.ntd7505.stayhub.dto.response.HotelStatusResponse;
 import com.ntd7505.stayhub.dto.response.HotelSummaryResponse;
+import com.ntd7505.stayhub.dto.response.OwnerHotelDetailResponse;
+import com.ntd7505.stayhub.dto.response.OwnerHotelSummaryResponse;
 import com.ntd7505.stayhub.entity.Hotel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -25,4 +27,9 @@ public interface HotelMapper {
   AdminHotelDetailResponse toAdminHotelDetailResponse(Hotel hotel);
 
   HotelStatusResponse toHotelStatusResponse(Hotel hotel);
+
+  OwnerHotelSummaryResponse toOwnerHotelSummaryResponse(Hotel hotel);
+
+  @Mapping(target = "ownerUserId", source = "owner.id")
+  OwnerHotelDetailResponse toOwnerHotelDetailResponse(Hotel hotel);
 }

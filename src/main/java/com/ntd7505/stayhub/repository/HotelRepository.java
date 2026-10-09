@@ -5,13 +5,16 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface HotelRepository extends JpaRepository<Hotel, UUID> {
+public interface HotelRepository
+    extends JpaRepository<Hotel, UUID>, JpaSpecificationExecutor<Hotel> {
 
   Optional<Hotel> findHotelBySlug(String slug);
 
@@ -21,4 +24,13 @@ public interface HotelRepository extends JpaRepository<Hotel, UUID> {
 
   @EntityGraph(attributePaths = {"city", "owner", "amenities"})
   Optional<Hotel> findAdminDetailById(UUID id);
+
+  boolean existsBySlug(String slug);
+
+  @Override
+  @EntityGraph(attributePaths = {"city"})
+  Page<Hotel> findAll(Specification<Hotel> specification, Pageable pageable);
+
+  @EntityGraph(attributePaths = {"city", "amenities"})
+  Optional<Hotel> findByIdAndOwner_Id(UUID id, UUID ownerId);
 }

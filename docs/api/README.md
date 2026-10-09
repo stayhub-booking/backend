@@ -9,7 +9,7 @@ Khi thay đổi URL, request, response, HTTP status hoặc business rule, phải
 | Module | Bảng dữ liệu chính | Trách nhiệm | Tài liệu | Trạng thái tài liệu |
 |---|---|---|---|---|
 | Identity & User Administration | `users`, `roles`, `permissions`, `user_roles`, `role_permissions` | Đăng ký, đăng nhập, hồ sơ cá nhân, trạng thái tài khoản và phân quyền | [identity-api.md](./identity-api.md) | Register đang triển khai; các API khác đã có contract |
-| Catalog | `cities`, `hotels`, `room_types`, `amenities`, `hotel_amenities`, `room_type_amenities` | Thành phố, khách sạn, loại phòng, tiện ích và duyệt khách sạn | [catalog-api.md](./catalog-api.md) | Contract đã có; API `PLANNED` |
+| Catalog | `cities`, `hotels`, `room_types`, `amenities`, `hotel_amenities`, `room_type_amenities` | Thành phố, khách sạn, loại phòng, tiện ích và duyệt khách sạn | [catalog-api.md](./catalog-api.md) | Owner Hotel create/list/detail: `IMPLEMENTED` (2026-10-09), chưa test HTTP/database; các API còn lại cần đối chiếu riêng |
 | Pricing & Inventory | `room_rates`, `room_inventory`, `inventory_reservations` | Giá theo ngày, phòng trống và giữ tồn kho | Chưa tạo | Planned |
 | Booking | `bookings`, `booking_items`, `booking_night_prices` | Tạo và quản lý đặt phòng | Chưa tạo | Planned |
 | Payments | `payment_attempts`, `payment_webhook_events` | Thanh toán, đối soát và webhook | Chưa tạo | Planned |
