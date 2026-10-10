@@ -18,4 +18,6 @@ public interface RoomTypeRepository extends JpaRepository<RoomType, UUID> {
 
   @EntityGraph(attributePaths = {"amenities"})
   Optional<RoomType> findRoomTypeByIdAndHotel_Id(UUID roomTypeId, UUID hotelId);
+
+  boolean existsByHotel_IdAndActiveTrue(UUID id);
 }

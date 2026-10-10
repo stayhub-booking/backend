@@ -35,4 +35,10 @@ public interface HotelService {
       Pageable pageable, HotelStatus status, UUID cityId, String q);
 
   OwnerHotelDetailResponse getOwnerDetailHotel(UUID hotelId);
+
+  OwnerHotelDetailResponse updateHotel(UpdateHotelRequest request, UUID hotelId);
+
+  HotelAmenitiesResponse updateHotelAmenities(UUID hotelId, UpdateHotelAmenitiesRequest request);
+
+  HotelStatusResponse submitHotel(UUID hotelId);
 }

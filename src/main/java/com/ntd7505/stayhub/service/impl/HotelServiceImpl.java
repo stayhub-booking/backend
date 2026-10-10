@@ -64,6 +64,9 @@ public class HotelServiceImpl implements HotelService {
   private final HotelMapper hotelMapper;
   private final CityRepository cityRepository;
   private final UserRepository userRepository;
+  private final AmenityRepository amenityRepository;
+  private final AmenityMapper amenityMapper;
+  private final RoomTypeRepository roomTypeRepository;
 
   @Override
   @Transactional(readOnly = true)
@@ -214,6 +217,108 @@ public class HotelServiceImpl implements HotelService {
     return hotelMapper.toOwnerHotelDetailResponse(hotel);
   }
 
+  @Override
+  @Transactional
+  @PreAuthorize("hasRole('HOTEL_OWNER')")
+  public OwnerHotelDetailResponse updateHotel(UpdateHotelRequest request, UUID hotelId) {
+
+    Hotel hotel = getEditableHotelForCurrentOwner(hotelId);
+
+    var city =
+        cityRepository
+            .findById(request.getCityId())
+            .orElseThrow(() -> new AppException(ErrorCode.CITY_NOT_FOUND));
+
+    hotel.setCity(city);
+    hotel.setName(request.getName());
+    hotel.setDescription(request.getDescription());
+    hotel.setAddress(request.getAddress());
+    hotel.setLatitude(request.getLatitude());
+    hotel.setLongitude(request.getLongitude());
+    hotel.setStarRating(request.getStarRating());
+    hotel.setCheckInTime(request.getCheckInTime());
+    hotel.setCheckOutTime(request.getCheckOutTime());
+
+    Hotel updatedHotel = hotelRepository.saveAndFlush(hotel);
+
+    return hotelMapper.toOwnerHotelDetailResponse(updatedHotel);
+  }
+
+  @Override
+  @Transactional
+  public HotelAmenitiesResponse updateHotelAmenities(
+      UUID hotelId, UpdateHotelAmenitiesRequest request) {
+
+    Hotel hotel = getEditableHotelForCurrentOwner(hotelId);
+
+    List<Amenity> amenities = amenityRepository.findAmenityByListIds(request.getAmenityIds());
+
+    if (amenities.size() != request.getAmenityIds().size()) {
+      throw new AppException(ErrorCode.AMENITY_NOT_FOUND);
+    }
+
+    boolean hasWrongCategory =
+        amenities.stream().anyMatch(amenity -> amenity.getCategory() != AmenityCategory.HOTEL);
+
+    if (hasWrongCategory) {
+      throw new AppException(ErrorCode.AMENITY_CATEGORY_MISMATCH);
+    }
+
+    hotel.getAmenities().clear();
+
+    hotel.getAmenities().addAll(amenities);
+
+    hotelRepository.save(hotel);
+
+    return new HotelAmenitiesResponse(
+        hotelId, amenities.stream().map(amenityMapper::toAmenityResponse).toList());
+  }
+
+  @Override
+  @Transactional
+  public HotelStatusResponse submitHotel(UUID hotelId) {
+
+    User owner = getCurrentOwner();
+
+    Hotel hotel =
+        hotelRepository
+            .findOwnedHotelForUpdate(hotelId, owner.getId())
+            .orElseThrow(() -> new AppException(ErrorCode.HOTEL_NOT_FOUND));
+
+    if (hotel.getStatus() == HotelStatus.PENDING_APPROVAL) {
+      return hotelMapper.toHotelStatusResponse(hotel);
+    }
+
+    if (hotel.getStatus() != HotelStatus.DRAFT && hotel.getStatus() != HotelStatus.REJECTED) {
+      throw new AppException(ErrorCode.HOTEL_INVALID_STATUS_TRANSITION);
+    }
+
+    boolean missingRequiredInfo =
+        hotel.getCity() == null
+            || hotel.getName() == null
+            || hotel.getName().isBlank()
+            || hotel.getAddress() == null
+            || hotel.getAddress().isBlank()
+            || hotel.getCheckInTime() == null
+            || hotel.getCheckOutTime() == null;
+
+    if (missingRequiredInfo) {
+      throw new AppException(ErrorCode.HOTEL_NOT_READY);
+    }
+
+    boolean hasActiveRoomType = roomTypeRepository.existsByHotel_IdAndActiveTrue(hotel.getId());
+
+    if (!hasActiveRoomType) {
+      throw new AppException(ErrorCode.HOTEL_NOT_READY);
+    }
+
+    hotel.setStatus(HotelStatus.PENDING_APPROVAL);
+
+    hotelRepository.saveAndFlush(hotel);
+
+    return hotelMapper.toHotelStatusResponse(hotel);
+  }
+
   private User getCurrentOwner() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     if (authentication == null
@@ -319,5 +424,20 @@ public class HotelServiceImpl implements HotelService {
       }
     }
     return false;
+  }
+
+  private Hotel getEditableHotelForCurrentOwner(UUID hotelId) {
+    User owner = getCurrentOwner();
+
+    Hotel hotel =
+        hotelRepository
+            .findOwnedHotelForUpdate(hotelId, owner.getId())
+            .orElseThrow(() -> new AppException(ErrorCode.HOTEL_NOT_FOUND));
+
+    if (hotel.getStatus() != HotelStatus.DRAFT && hotel.getStatus() != HotelStatus.REJECTED) {
+      throw new AppException(ErrorCode.HOTEL_NOT_EDITABLE);
+    }
+
+    return hotel;
   }
 }

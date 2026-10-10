@@ -77,28 +77,25 @@ public class OwnerHotelController {
   }
 
   // PUT /{hotelId} — Cập nhật thông tin Hotel
-  /*
   @PutMapping("/{hotelId}")
   public ResponseEntity<ApiResponse<OwnerHotelDetailResponse>> updateHotel(
-      @PathVariable UUID hotelId,
-      @Valid @RequestBody UpdateHotelRequest request) {
+      @PathVariable UUID hotelId, @Valid @RequestBody UpdateHotelRequest request) {
+    var rs = hotelService.updateHotel(request, hotelId);
+    return ResponseEntity.ok(ApiResponse.success(ResponseCode.HOTEL_UPDATED, rs));
   }
-  */
 
   // PUT /{hotelId}/amenities — Thay toàn bộ tiện ích Hotel
-  /*
   @PutMapping("/{hotelId}/amenities")
   public ResponseEntity<ApiResponse<HotelAmenitiesResponse>> updateHotelAmenities(
-      @PathVariable UUID hotelId,
-      @Valid @RequestBody UpdateHotelAmenitiesRequest request) {
+      @PathVariable UUID hotelId, @Valid @RequestBody UpdateHotelAmenitiesRequest request) {
+    var rs = hotelService.updateHotelAmenities(hotelId, request);
+    return ResponseEntity.ok(ApiResponse.success(ResponseCode.HOTEL_AMENITIES_UPDATED, rs));
   }
-  */
 
   // PATCH /{hotelId}/submit — Gửi Hotel xét duyệt
-  /*
   @PatchMapping("/{hotelId}/submit")
-  public ResponseEntity<ApiResponse<HotelStatusResponse>> submitHotel(
-      @PathVariable UUID hotelId) {
+  public ResponseEntity<ApiResponse<HotelStatusResponse>> submitHotel(@PathVariable UUID hotelId) {
+    var rs = hotelService.submitHotel(hotelId);
+    return ResponseEntity.ok(ApiResponse.success(ResponseCode.HOTEL_STATUS_UPDATED, rs));
   }
-  */
 }
