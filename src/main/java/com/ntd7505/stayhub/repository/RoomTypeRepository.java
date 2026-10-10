@@ -7,10 +7,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface RoomTypeRepository extends JpaRepository<RoomType, UUID> {
+public interface RoomTypeRepository
+    extends JpaRepository<RoomType, UUID>, JpaSpecificationExecutor<RoomType> {
 
   Page<RoomType> findAllByHotel_SlugAndActiveTrue(String slug, Pageable pageable);
 
