@@ -31,7 +31,7 @@ public class City {
   @Column(name = "id", nullable = false, updatable = false)
   private UUID id;
 
-  @Column(name = "country_code", nullable = false, length = 2, columnDefinition = "char(2)")
+  @Column(name = "country_code", nullable = false, length = 2)
   private String countryCode;
 
   @Column(name = "name", nullable = false, length = 100)
