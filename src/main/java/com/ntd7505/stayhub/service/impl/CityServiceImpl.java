@@ -2,8 +2,8 @@ package com.ntd7505.stayhub.service.impl;
 
 import com.ntd7505.stayhub.dto.request.CreateCityRequest;
 import com.ntd7505.stayhub.dto.request.UpdateCityRequest;
-import com.ntd7505.stayhub.dto.response.CityResponse;
-import com.ntd7505.stayhub.dto.response.PageResponse;
+import com.ntd7505.stayhub.dto.response.city.CityResponse;
+import com.ntd7505.stayhub.dto.response.common.PageResponse;
 import com.ntd7505.stayhub.entity.City;
 import com.ntd7505.stayhub.enums.ErrorCode;
 import com.ntd7505.stayhub.exception.AppException;

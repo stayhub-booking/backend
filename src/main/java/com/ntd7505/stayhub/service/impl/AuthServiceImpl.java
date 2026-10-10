@@ -2,7 +2,7 @@ package com.ntd7505.stayhub.service.impl;
 
 import com.ntd7505.stayhub.dto.request.LoginRequest;
 import com.ntd7505.stayhub.dto.request.RefreshTokenRequest;
-import com.ntd7505.stayhub.dto.response.AuthenticationResponse;
+import com.ntd7505.stayhub.dto.response.auth.AuthenticationResponse;
 import com.ntd7505.stayhub.entity.User;
 import com.ntd7505.stayhub.enums.ErrorCode;
 import com.ntd7505.stayhub.enums.UserStatus;

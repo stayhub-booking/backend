@@ -1,4 +1,4 @@
-package com.ntd7505.stayhub.dto.response;
+package com.ntd7505.stayhub.dto.response.amenity;
 
 import com.ntd7505.stayhub.enums.AmenityCategory;
 import java.util.UUID;

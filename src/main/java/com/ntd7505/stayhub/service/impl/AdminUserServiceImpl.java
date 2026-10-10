@@ -2,12 +2,12 @@ package com.ntd7505.stayhub.service.impl;
 
 import com.ntd7505.stayhub.dto.request.UpdateUserRolesRequest;
 import com.ntd7505.stayhub.dto.request.UpdateUserStatusRequest;
-import com.ntd7505.stayhub.dto.response.AdminUserDetailResponse;
-import com.ntd7505.stayhub.dto.response.PageResponse;
-import com.ntd7505.stayhub.dto.response.RoleResponse;
-import com.ntd7505.stayhub.dto.response.UserResponse;
-import com.ntd7505.stayhub.dto.response.UserRolesResponse;
-import com.ntd7505.stayhub.dto.response.UserStatusResponse;
+import com.ntd7505.stayhub.dto.response.common.PageResponse;
+import com.ntd7505.stayhub.dto.response.role.RoleResponse;
+import com.ntd7505.stayhub.dto.response.user.AdminUserDetailResponse;
+import com.ntd7505.stayhub.dto.response.user.UserResponse;
+import com.ntd7505.stayhub.dto.response.user.UserRolesResponse;
+import com.ntd7505.stayhub.dto.response.user.UserStatusResponse;
 import com.ntd7505.stayhub.entity.Role;
 import com.ntd7505.stayhub.entity.User;
 import com.ntd7505.stayhub.enums.ErrorCode;

@@ -1,6 +1,6 @@
 package com.ntd7505.stayhub.exception;
 
-import com.ntd7505.stayhub.dto.response.ApiResponse;
+import com.ntd7505.stayhub.dto.response.common.ApiResponse;
 import com.ntd7505.stayhub.enums.ErrorCode;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;

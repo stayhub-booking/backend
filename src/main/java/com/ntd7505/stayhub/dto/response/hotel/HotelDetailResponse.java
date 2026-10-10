@@ -1,5 +1,7 @@
-package com.ntd7505.stayhub.dto.response;
+package com.ntd7505.stayhub.dto.response.hotel;
 
+import com.ntd7505.stayhub.dto.response.amenity.AmenityResponse;
+import com.ntd7505.stayhub.dto.response.city.CityResponse;
 import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.util.List;

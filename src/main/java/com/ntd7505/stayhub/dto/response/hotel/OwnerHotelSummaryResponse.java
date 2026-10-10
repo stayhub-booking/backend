@@ -1,5 +1,6 @@
-package com.ntd7505.stayhub.dto.response;
+package com.ntd7505.stayhub.dto.response.hotel;
 
+import com.ntd7505.stayhub.dto.response.city.CityResponse;
 import com.ntd7505.stayhub.enums.HotelStatus;
 import java.time.OffsetDateTime;
 import java.util.UUID;

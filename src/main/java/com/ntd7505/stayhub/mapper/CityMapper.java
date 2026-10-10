@@ -1,7 +1,7 @@
 package com.ntd7505.stayhub.mapper;
 
 import com.ntd7505.stayhub.dto.request.CreateCityRequest;
-import com.ntd7505.stayhub.dto.response.CityResponse;
+import com.ntd7505.stayhub.dto.response.city.CityResponse;
 import com.ntd7505.stayhub.entity.City;
 import java.util.Locale;
 import org.mapstruct.Mapper;

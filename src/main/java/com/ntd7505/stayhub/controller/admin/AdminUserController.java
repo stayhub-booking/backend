@@ -1,7 +1,7 @@
 package com.ntd7505.stayhub.controller.admin;
 
-import com.ntd7505.stayhub.dto.response.ApiResponse;
-import com.ntd7505.stayhub.dto.response.UserResponse;
+import com.ntd7505.stayhub.dto.response.common.ApiResponse;
+import com.ntd7505.stayhub.dto.response.user.UserResponse;
 import com.ntd7505.stayhub.enums.ResponseCode;
 import com.ntd7505.stayhub.service.UserService;
 import java.util.Objects;

@@ -2,8 +2,8 @@ package com.ntd7505.stayhub.service;
 
 import com.ntd7505.stayhub.dto.request.CreateAmenityRequest;
 import com.ntd7505.stayhub.dto.request.UpdateAmenityRequest;
-import com.ntd7505.stayhub.dto.response.AmenityResponse;
-import com.ntd7505.stayhub.dto.response.PageResponse;
+import com.ntd7505.stayhub.dto.response.amenity.AmenityResponse;
+import com.ntd7505.stayhub.dto.response.common.PageResponse;
 import java.util.UUID;
 import org.springframework.data.domain.Pageable;
 

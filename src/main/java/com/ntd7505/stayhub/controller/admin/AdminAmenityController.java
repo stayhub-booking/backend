@@ -2,8 +2,8 @@ package com.ntd7505.stayhub.controller.admin;
 
 import com.ntd7505.stayhub.dto.request.CreateAmenityRequest;
 import com.ntd7505.stayhub.dto.request.UpdateAmenityRequest;
-import com.ntd7505.stayhub.dto.response.AmenityResponse;
-import com.ntd7505.stayhub.dto.response.ApiResponse;
+import com.ntd7505.stayhub.dto.response.amenity.AmenityResponse;
+import com.ntd7505.stayhub.dto.response.common.ApiResponse;
 import com.ntd7505.stayhub.enums.ResponseCode;
 import com.ntd7505.stayhub.service.AmenityService;
 import jakarta.validation.Valid;

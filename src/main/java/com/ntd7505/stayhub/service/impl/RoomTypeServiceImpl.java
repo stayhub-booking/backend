@@ -1,9 +1,9 @@
 package com.ntd7505.stayhub.service.impl;
 
-import com.ntd7505.stayhub.dto.response.AdminRoomTypeSummaryResponse;
-import com.ntd7505.stayhub.dto.response.PageResponse;
-import com.ntd7505.stayhub.dto.response.RoomTypeDetailResponse;
-import com.ntd7505.stayhub.dto.response.RoomTypeResponse;
+import com.ntd7505.stayhub.dto.response.common.PageResponse;
+import com.ntd7505.stayhub.dto.response.roomtype.AdminRoomTypeSummaryResponse;
+import com.ntd7505.stayhub.dto.response.roomtype.RoomTypeDetailResponse;
+import com.ntd7505.stayhub.dto.response.roomtype.RoomTypeResponse;
 import com.ntd7505.stayhub.entity.RoomType;
 import com.ntd7505.stayhub.enums.ErrorCode;
 import com.ntd7505.stayhub.exception.AppException;

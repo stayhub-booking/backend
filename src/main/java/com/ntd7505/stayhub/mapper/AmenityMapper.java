@@ -1,7 +1,7 @@
 package com.ntd7505.stayhub.mapper;
 
 import com.ntd7505.stayhub.dto.request.CreateAmenityRequest;
-import com.ntd7505.stayhub.dto.response.AmenityResponse;
+import com.ntd7505.stayhub.dto.response.amenity.AmenityResponse;
 import com.ntd7505.stayhub.entity.Amenity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

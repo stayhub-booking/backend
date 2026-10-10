@@ -1,8 +1,8 @@
 package com.ntd7505.stayhub.mapper;
 
-import com.ntd7505.stayhub.dto.response.AdminRoomTypeSummaryResponse;
-import com.ntd7505.stayhub.dto.response.RoomTypeDetailResponse;
-import com.ntd7505.stayhub.dto.response.RoomTypeResponse;
+import com.ntd7505.stayhub.dto.response.roomtype.AdminRoomTypeSummaryResponse;
+import com.ntd7505.stayhub.dto.response.roomtype.RoomTypeDetailResponse;
+import com.ntd7505.stayhub.dto.response.roomtype.RoomTypeResponse;
 import com.ntd7505.stayhub.entity.RoomType;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

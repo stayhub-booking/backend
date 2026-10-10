@@ -1,12 +1,12 @@
 package com.ntd7505.stayhub.controller.publicapi;
 
-import com.ntd7505.stayhub.dto.response.AmenityResponse;
-import com.ntd7505.stayhub.dto.response.ApiResponse;
-import com.ntd7505.stayhub.dto.response.CityResponse;
-import com.ntd7505.stayhub.dto.response.HotelDetailResponse;
-import com.ntd7505.stayhub.dto.response.HotelSummaryResponse;
-import com.ntd7505.stayhub.dto.response.PageResponse;
-import com.ntd7505.stayhub.dto.response.RoomTypeResponse;
+import com.ntd7505.stayhub.dto.response.amenity.AmenityResponse;
+import com.ntd7505.stayhub.dto.response.city.CityResponse;
+import com.ntd7505.stayhub.dto.response.common.ApiResponse;
+import com.ntd7505.stayhub.dto.response.common.PageResponse;
+import com.ntd7505.stayhub.dto.response.hotel.HotelDetailResponse;
+import com.ntd7505.stayhub.dto.response.hotel.HotelSummaryResponse;
+import com.ntd7505.stayhub.dto.response.roomtype.RoomTypeResponse;
 import com.ntd7505.stayhub.enums.ResponseCode;
 import com.ntd7505.stayhub.service.AmenityService;
 import com.ntd7505.stayhub.service.CityService;

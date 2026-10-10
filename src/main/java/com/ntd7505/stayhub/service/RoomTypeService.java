@@ -1,9 +1,9 @@
 package com.ntd7505.stayhub.service;
 
-import com.ntd7505.stayhub.dto.response.AdminRoomTypeSummaryResponse;
-import com.ntd7505.stayhub.dto.response.PageResponse;
-import com.ntd7505.stayhub.dto.response.RoomTypeDetailResponse;
-import com.ntd7505.stayhub.dto.response.RoomTypeResponse;
+import com.ntd7505.stayhub.dto.response.common.PageResponse;
+import com.ntd7505.stayhub.dto.response.roomtype.AdminRoomTypeSummaryResponse;
+import com.ntd7505.stayhub.dto.response.roomtype.RoomTypeDetailResponse;
+import com.ntd7505.stayhub.dto.response.roomtype.RoomTypeResponse;
 import java.util.UUID;
 import org.springframework.data.domain.Pageable;
 

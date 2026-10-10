@@ -2,8 +2,8 @@ package com.ntd7505.stayhub.service.impl;
 
 import com.ntd7505.stayhub.dto.request.CreateAmenityRequest;
 import com.ntd7505.stayhub.dto.request.UpdateAmenityRequest;
-import com.ntd7505.stayhub.dto.response.AmenityResponse;
-import com.ntd7505.stayhub.dto.response.PageResponse;
+import com.ntd7505.stayhub.dto.response.amenity.AmenityResponse;
+import com.ntd7505.stayhub.dto.response.common.PageResponse;
 import com.ntd7505.stayhub.entity.Amenity;
 import com.ntd7505.stayhub.enums.ErrorCode;
 import com.ntd7505.stayhub.exception.AppException;

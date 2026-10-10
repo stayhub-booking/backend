@@ -1,4 +1,4 @@
-package com.ntd7505.stayhub.dto.response;
+package com.ntd7505.stayhub.dto.response.city;
 
 import java.util.UUID;
 

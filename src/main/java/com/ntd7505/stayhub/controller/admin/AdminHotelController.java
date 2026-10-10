@@ -1,13 +1,13 @@
 package com.ntd7505.stayhub.controller.admin;
 
 import com.ntd7505.stayhub.dto.request.UpdateHotelStatusRequest;
-import com.ntd7505.stayhub.dto.response.AdminHotelDetailResponse;
-import com.ntd7505.stayhub.dto.response.AdminHotelSummaryResponse;
-import com.ntd7505.stayhub.dto.response.AdminRoomTypeSummaryResponse;
-import com.ntd7505.stayhub.dto.response.ApiResponse;
-import com.ntd7505.stayhub.dto.response.HotelStatusResponse;
-import com.ntd7505.stayhub.dto.response.PageResponse;
-import com.ntd7505.stayhub.dto.response.RoomTypeDetailResponse;
+import com.ntd7505.stayhub.dto.response.common.ApiResponse;
+import com.ntd7505.stayhub.dto.response.common.PageResponse;
+import com.ntd7505.stayhub.dto.response.hotel.AdminHotelDetailResponse;
+import com.ntd7505.stayhub.dto.response.hotel.AdminHotelSummaryResponse;
+import com.ntd7505.stayhub.dto.response.hotel.HotelStatusResponse;
+import com.ntd7505.stayhub.dto.response.roomtype.AdminRoomTypeSummaryResponse;
+import com.ntd7505.stayhub.dto.response.roomtype.RoomTypeDetailResponse;
 import com.ntd7505.stayhub.enums.ResponseCode;
 import com.ntd7505.stayhub.service.HotelService;
 import com.ntd7505.stayhub.service.RoomTypeService;

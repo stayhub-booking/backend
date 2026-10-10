@@ -1,12 +1,12 @@
 package com.ntd7505.stayhub.mapper;
 
-import com.ntd7505.stayhub.dto.response.AdminHotelDetailResponse;
-import com.ntd7505.stayhub.dto.response.AdminHotelSummaryResponse;
-import com.ntd7505.stayhub.dto.response.HotelDetailResponse;
-import com.ntd7505.stayhub.dto.response.HotelStatusResponse;
-import com.ntd7505.stayhub.dto.response.HotelSummaryResponse;
-import com.ntd7505.stayhub.dto.response.OwnerHotelDetailResponse;
-import com.ntd7505.stayhub.dto.response.OwnerHotelSummaryResponse;
+import com.ntd7505.stayhub.dto.response.hotel.AdminHotelDetailResponse;
+import com.ntd7505.stayhub.dto.response.hotel.AdminHotelSummaryResponse;
+import com.ntd7505.stayhub.dto.response.hotel.HotelDetailResponse;
+import com.ntd7505.stayhub.dto.response.hotel.HotelStatusResponse;
+import com.ntd7505.stayhub.dto.response.hotel.HotelSummaryResponse;
+import com.ntd7505.stayhub.dto.response.hotel.OwnerHotelDetailResponse;
+import com.ntd7505.stayhub.dto.response.hotel.OwnerHotelSummaryResponse;
 import com.ntd7505.stayhub.entity.Hotel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

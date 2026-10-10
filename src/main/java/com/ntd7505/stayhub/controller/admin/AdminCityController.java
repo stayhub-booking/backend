@@ -2,8 +2,8 @@ package com.ntd7505.stayhub.controller.admin;
 
 import com.ntd7505.stayhub.dto.request.CreateCityRequest;
 import com.ntd7505.stayhub.dto.request.UpdateCityRequest;
-import com.ntd7505.stayhub.dto.response.ApiResponse;
-import com.ntd7505.stayhub.dto.response.CityResponse;
+import com.ntd7505.stayhub.dto.response.city.CityResponse;
+import com.ntd7505.stayhub.dto.response.common.ApiResponse;
 import com.ntd7505.stayhub.enums.ResponseCode;
 import com.ntd7505.stayhub.service.CityService;
 import jakarta.validation.Valid;

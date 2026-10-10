@@ -1,7 +1,7 @@
 package com.ntd7505.stayhub.service.impl;
 
 import com.ntd7505.stayhub.dto.request.UserRegisterRequest;
-import com.ntd7505.stayhub.dto.response.UserResponse;
+import com.ntd7505.stayhub.dto.response.user.UserResponse;
 import com.ntd7505.stayhub.entity.Role;
 import com.ntd7505.stayhub.entity.User;
 import com.ntd7505.stayhub.enums.ErrorCode;

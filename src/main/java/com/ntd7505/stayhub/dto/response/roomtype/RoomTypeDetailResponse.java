@@ -1,5 +1,6 @@
-package com.ntd7505.stayhub.dto.response;
+package com.ntd7505.stayhub.dto.response.roomtype;
 
+import com.ntd7505.stayhub.dto.response.amenity.AmenityResponse;
 import java.util.List;
 import java.util.UUID;
 
