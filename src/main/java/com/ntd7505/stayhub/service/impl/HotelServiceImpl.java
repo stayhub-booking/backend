@@ -19,7 +19,6 @@ import com.ntd7505.stayhub.entity.User;
 import com.ntd7505.stayhub.enums.AmenityCategory;
 import com.ntd7505.stayhub.enums.ErrorCode;
 import com.ntd7505.stayhub.enums.HotelStatus;
-import com.ntd7505.stayhub.enums.UserStatus;
 import com.ntd7505.stayhub.exception.AppException;
 import com.ntd7505.stayhub.mapper.AmenityMapper;
 import com.ntd7505.stayhub.mapper.HotelMapper;
@@ -27,8 +26,10 @@ import com.ntd7505.stayhub.repository.AmenityRepository;
 import com.ntd7505.stayhub.repository.CityRepository;
 import com.ntd7505.stayhub.repository.HotelRepository;
 import com.ntd7505.stayhub.repository.RoomTypeRepository;
-import com.ntd7505.stayhub.repository.UserRepository;
+import com.ntd7505.stayhub.security.CurrentUserProvider;
 import com.ntd7505.stayhub.service.HotelService;
+import com.ntd7505.stayhub.validation.NormalizeOwnerSearch;
+import com.ntd7505.stayhub.validation.PageableValidator;
 import jakarta.persistence.criteria.Predicate;
 import java.text.Normalizer;
 import java.util.ArrayList;
@@ -40,14 +41,10 @@ import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,7 +60,7 @@ public class HotelServiceImpl implements HotelService {
   private final HotelRepository hotelRepository;
   private final HotelMapper hotelMapper;
   private final CityRepository cityRepository;
-  private final UserRepository userRepository;
+  private final CurrentUserProvider currentUserProvider;
   private final AmenityRepository amenityRepository;
   private final AmenityMapper amenityMapper;
   private final RoomTypeRepository roomTypeRepository;
@@ -174,8 +171,10 @@ public class HotelServiceImpl implements HotelService {
   public PageResponse<OwnerHotelSummaryResponse> getOwnerHotels(
       Pageable pageable, HotelStatus status, UUID cityId, String q) {
     User owner = getCurrentOwner();
-    Pageable ownerPageable = validateOwnerPageable(pageable);
-    String search = normalizeOwnerSearch(q);
+    Pageable ownerPageable =
+        PageableValidator.validate(
+            pageable, OWNER_SORT_FIELDS, Sort.by(Sort.Direction.DESC, "createdAt"));
+    String search = NormalizeOwnerSearch.normalize(q);
 
     Specification<Hotel> specification =
         (root, query, builder) -> {
@@ -320,77 +319,7 @@ public class HotelServiceImpl implements HotelService {
   }
 
   private User getCurrentOwner() {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    if (authentication == null
-        || !authentication.isAuthenticated()
-        || !(authentication.getPrincipal() instanceof Jwt jwt)
-        || jwt.getSubject() == null) {
-      throw new AppException(ErrorCode.UNAUTHENTICATED);
-    }
-
-    UUID ownerId;
-    try {
-      ownerId = UUID.fromString(jwt.getSubject());
-    } catch (IllegalArgumentException exception) {
-      throw new AppException(ErrorCode.UNAUTHENTICATED);
-    }
-
-    User owner =
-        userRepository
-            .findByIdAndDeletedFalse(ownerId)
-            .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_ACTIVE));
-    if (owner.getStatus() != UserStatus.ACTIVE) {
-      throw new AppException(ErrorCode.ACCOUNT_NOT_ACTIVE);
-    }
-    boolean hasActiveOwnerRole =
-        owner.getRoles().stream()
-            .anyMatch(
-                userRole ->
-                    userRole.getRole().isActive()
-                        && "HOTEL_OWNER".equals(userRole.getRole().getRoleKey()));
-    if (!hasActiveOwnerRole) {
-      throw new AppException(ErrorCode.ACCESS_DENIED);
-    }
-    return owner;
-  }
-
-  private Pageable validateOwnerPageable(Pageable pageable) {
-    if (pageable.isUnpaged()
-        || pageable.getPageNumber() < 0
-        || pageable.getPageSize() < 1
-        || pageable.getPageSize() > 100) {
-      throw new AppException(ErrorCode.VALIDATION_ERROR);
-    }
-    Sort sort = pageable.getSort();
-    for (Sort.Order order : sort) {
-      if (!OWNER_SORT_FIELDS.contains(order.getProperty())) {
-        throw new AppException(ErrorCode.VALIDATION_ERROR);
-      }
-    }
-    if (sort.isUnsorted()) {
-      sort = Sort.by(Sort.Direction.DESC, "createdAt");
-    }
-    if (sort.getOrderFor("id") == null) {
-      sort = sort.and(Sort.by("id"));
-    }
-    return PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
-  }
-
-  private String normalizeOwnerSearch(String q) {
-    if (q == null) {
-      return null;
-    }
-    String search = q.trim();
-    if (search.isEmpty() || search.length() > 100) {
-      throw new AppException(ErrorCode.VALIDATION_ERROR);
-    }
-    return "%"
-        + search
-            .toLowerCase(Locale.ROOT)
-            .replace("\\", "\\\\")
-            .replace("%", "\\%")
-            .replace("_", "\\_")
-        + "%";
+    return currentUserProvider.requireActiveUserWithRole("HOTEL_OWNER");
   }
 
   private String generateHotelSlug(String name) {
