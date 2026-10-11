@@ -1,5 +1,6 @@
 package com.ntd7505.stayhub.service.impl;
 
+import com.ntd7505.stayhub.dto.request.AssignRoleToUserRequest;
 import com.ntd7505.stayhub.dto.request.UpdateUserRolesRequest;
 import com.ntd7505.stayhub.dto.request.UpdateUserStatusRequest;
 import com.ntd7505.stayhub.dto.response.common.PageResponse;
@@ -17,6 +18,7 @@ import com.ntd7505.stayhub.mapper.UserMapper;
 import com.ntd7505.stayhub.repository.RefreshTokenRepository;
 import com.ntd7505.stayhub.repository.RoleRepository;
 import com.ntd7505.stayhub.repository.UserRepository;
+import com.ntd7505.stayhub.security.CurrentUserProvider;
 import com.ntd7505.stayhub.service.AdminUserService;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
@@ -50,6 +52,7 @@ public class AdminUserServiceImpl implements AdminUserService {
   private final RoleRepository roleRepository;
   private final RefreshTokenRepository refreshTokenRepository;
   private final UserMapper userMapper;
+  private final CurrentUserProvider currentUserProvider;
 
   @Override
   @Transactional(readOnly = true)
@@ -174,6 +177,36 @@ public class AdminUserServiceImpl implements AdminUserService {
         idPage.getSize(),
         idPage.getTotalElements(),
         idPage.getTotalPages());
+  }
+
+  @Override
+  @Transactional
+  public RoleResponse assignRoleToUser(AssignRoleToUserRequest request, UUID userId) {
+
+    User actor = currentUserProvider.requireActiveUserWithRole("ADMIN");
+
+    User user =
+        userRepository
+            .lockByIdAndDeletedFalse(userId)
+            .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+    Role role =
+        roleRepository
+            .findByRoleKeyAndActiveTrue(request.roleKey())
+            .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
+
+    if (actor.getId().equals(userId) && "HOTEL_OWNER".equals(role.getRoleKey())) {
+      throw new AppException(ErrorCode.SELF_ROLE_ASSIGNMENT_FORBIDDEN);
+    }
+
+    if (user.hasRole(role.getRoleKey())) {
+      throw new AppException(ErrorCode.USER_ROLE_ALREADY_EXISTS);
+    }
+
+    user.addRole(role);
+
+    return new RoleResponse(
+        role.getRoleKey(), role.getRoleName(), role.getDescription(), role.isActive());
   }
 
   private void validatePageable(Pageable pageable) {

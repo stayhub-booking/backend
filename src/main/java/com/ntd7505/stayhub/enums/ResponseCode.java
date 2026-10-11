@@ -17,6 +17,7 @@ public enum ResponseCode {
   USER_STATUS_UPDATED(HttpStatus.OK, "USER_200_005", "User status updated successfully"),
   USER_ROLES_UPDATED(HttpStatus.OK, "USER_200_006", "User roles updated successfully"),
   ROLES_RETRIEVED(HttpStatus.OK, "ROLE_200_001", "Roles retrieved successfully"),
+  ROLE_ASSIGNED(HttpStatus.CREATED, "ROLE_201_001", "Role assigned to user successfully"),
   USERS_RETRIEVED(HttpStatus.OK, "USER_200_004", "Users retrieved successfully"),
   CITIES_RETRIEVED(HttpStatus.OK, "CITY_200_001", "Cities retrieved successfully"),
   CITY_CREATED(HttpStatus.CREATED, "CITY_201_001", "City created successfully"),

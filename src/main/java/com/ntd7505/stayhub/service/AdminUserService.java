@@ -1,5 +1,6 @@
 package com.ntd7505.stayhub.service;
 
+import com.ntd7505.stayhub.dto.request.AssignRoleToUserRequest;
 import com.ntd7505.stayhub.dto.request.UpdateUserRolesRequest;
 import com.ntd7505.stayhub.dto.request.UpdateUserStatusRequest;
 import com.ntd7505.stayhub.dto.response.common.PageResponse;
@@ -22,4 +23,6 @@ public interface AdminUserService {
   UserStatusResponse updateStatus(UUID actorId, UUID userId, UpdateUserStatusRequest request);
 
   PageResponse<UserResponse> getUsers(Pageable pageable);
+
+  RoleResponse assignRoleToUser(AssignRoleToUserRequest request, UUID userId);
 }

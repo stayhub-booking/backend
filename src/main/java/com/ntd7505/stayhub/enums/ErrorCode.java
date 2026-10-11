@@ -57,7 +57,11 @@ public enum ErrorCode {
   AMENITY_CODE_ALREADY_EXISTS(
       HttpStatus.CONFLICT, "AMENITY_409_001", "Amenity code already exists"),
   AMENITY_CATEGORY_MISMATCH(
-      HttpStatus.CONFLICT, "AMENITY_409_002", "Amenity category does not match the resource");
+      HttpStatus.CONFLICT, "AMENITY_409_002", "Amenity category does not match the resource"),
+  SELF_ROLE_ASSIGNMENT_FORBIDDEN(
+      HttpStatus.FORBIDDEN,
+      "ROLE_403_001",
+      "Administrators cannot assign the HOTEL_OWNER role to themselves");
 
   private final HttpStatus httpStatus;
   private final String code;
