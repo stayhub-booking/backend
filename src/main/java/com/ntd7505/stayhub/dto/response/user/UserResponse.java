@@ -1,4 +1,4 @@
-package com.ntd7505.stayhub.dto.response;
+package com.ntd7505.stayhub.dto.response.user;
 
 import com.ntd7505.stayhub.enums.UserStatus;
 import java.time.OffsetDateTime;

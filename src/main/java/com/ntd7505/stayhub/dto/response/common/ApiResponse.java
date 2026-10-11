@@ -1,4 +1,4 @@
-package com.ntd7505.stayhub.dto.response;
+package com.ntd7505.stayhub.dto.response.common;
 
 import com.ntd7505.stayhub.enums.ErrorCode;
 import com.ntd7505.stayhub.enums.ResponseCode;
