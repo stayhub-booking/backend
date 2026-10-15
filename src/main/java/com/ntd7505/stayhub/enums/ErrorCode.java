@@ -33,6 +33,11 @@ public enum ErrorCode {
       HttpStatus.INTERNAL_SERVER_ERROR, "COMMON_500_001", "An unexpected error occurred"),
   ROLE_NOT_FOUND(HttpStatus.NOT_FOUND, "ROLE_404_001", "Role not found"),
   INVALID_CREDENTIALS(HttpStatus.UNAUTHORIZED, "AUTH_401_001", "Invalid email or password"),
+  CURRENT_PASSWORD_INVALID(HttpStatus.BAD_REQUEST, "USER_400_001", "Current password is invalid"),
+  NEW_PASSWORD_SAME_AS_CURRENT(
+      HttpStatus.BAD_REQUEST,
+      "USER_400_002",
+      "New password must be different from the current password"),
 
   ACCOUNT_NOT_ACTIVE(HttpStatus.FORBIDDEN, "AUTH_403_001", "Account is not active"),
   INVALID_REFRESH_TOKEN(

@@ -125,7 +125,7 @@ Trong giai đoạn MVP chưa có email verification, đăng ký khách hàng th�
 | 2 | `POST` | `/api/v1/auth/login` | Anonymous | Đăng nhập và nhận access token | `PLANNED` |
 | 3 | `GET` | `/api/v1/users/me` | Authenticated | Lấy tài khoản hiện tại | `PLANNED` |
 | 4 | `PATCH` | `/api/v1/users/me` | Authenticated | Cập nhật hồ sơ cơ bản | `PLANNED` |
-| 5 | `POST` | `/api/v1/users/me/password` | Authenticated | Đổi mật khẩu | `PLANNED` |
+| 5 | `POST` | `/api/v1/users/me/password` | Authenticated | Đổi mật khẩu | `IMPLEMENTED` |
 | 6 | `GET` | `/api/v1/admin/users` | ADMIN | Danh sách người dùng | `PLANNED` |
 | 7 | `GET` | `/api/v1/admin/users/{userId}` | ADMIN | Chi tiết người dùng | `PLANNED` |
 | 8 | `PATCH` | `/api/v1/admin/users/{userId}/status` | ADMIN | Cập nhật trạng thái | `PLANNED` |
@@ -381,7 +381,7 @@ Sử dụng cùng schema user trong endpoint `GET /api/v1/users/me` với:
 - **Method:** `POST`
 - **URL:** `/api/v1/users/me/password`
 - **Quyền:** `Authenticated`
-- **Trạng thái:** `PLANNED`
+- **Trạng thái:** `IMPLEMENTED`
 
 #### Request body
 
@@ -415,13 +415,15 @@ Sử dụng cùng schema user trong endpoint `GET /api/v1/users/me` với:
 |---:|---|---|
 | `400` | `COMMON_400_001` | Password mới vi phạm validation |
 | `400` | `USER_400_001` | Password hiện tại không đúng |
+| `400` | `USER_400_002` | Password mới trùng password hiện tại |
 | `401` | `AUTH_401_002` | Access token không hợp lệ |
 
 #### Business rules
 
 1. Password mới không được giống password hiện tại.
 2. Sau khi đổi phải hash password mới bằng `PasswordEncoder`.
-3. Khi có cơ chế refresh token, đổi mật khẩu phải thu hồi toàn bộ refresh token của user.
+3. Đổi mật khẩu thu hồi toàn bộ refresh token của user.
+4. Access token hiện tại vẫn còn hiệu lực đến khi hết hạn; client phải xóa cookie/token và yêu cầu đăng nhập lại.
 
 ---
 
@@ -716,7 +718,7 @@ Các code đã tồn tại được giữ nguyên; các code `PLANNED` phải đ
 | `USER_RETRIEVED` | `200` | `USER_200_001` | `User retrieved successfully` | Đã có |
 | `LOGIN_SUCCESS` | `200` | `AUTH_200_001` | `Login successful` | `PLANNED` |
 | `USER_UPDATED` | `200` | `USER_200_002` | `User updated successfully` | `PLANNED` |
-| `PASSWORD_CHANGED` | `200` | `USER_200_003` | `Password changed successfully` | `PLANNED` |
+| `PASSWORD_CHANGED` | `200` | `USER_200_003` | `Password changed successfully` | Đã có |
 | `USERS_RETRIEVED` | `200` | `USER_200_004` | `Users retrieved successfully` | `PLANNED` |
 | `USER_STATUS_UPDATED` | `200` | `USER_200_005` | `User status updated successfully` | `PLANNED` |
 | `USER_ROLES_UPDATED` | `200` | `USER_200_006` | `User roles updated successfully` | `PLANNED` |
@@ -736,7 +738,8 @@ Các code đã tồn tại được giữ nguyên; các code `PLANNED` phải đ
 | `UNAUTHENTICATED` | `401` | `AUTH_401_002` | `Authentication is required` | `PLANNED` |
 | `ACCOUNT_NOT_ACTIVE` | `403` | `AUTH_403_001` | `Account is not active` | `PLANNED` |
 | `ACCESS_DENIED` | `403` | `AUTH_403_002` | `You do not have permission to perform this action` | `PLANNED` |
-| `CURRENT_PASSWORD_INVALID` | `400` | `USER_400_001` | `Current password is invalid` | `PLANNED` |
+| `CURRENT_PASSWORD_INVALID` | `400` | `USER_400_001` | `Current password is invalid` | Đã có |
+| `NEW_PASSWORD_SAME_AS_CURRENT` | `400` | `USER_400_002` | `New password must be different from the current password` | Đã có |
 | `INVALID_USER_STATUS_TRANSITION` | `409` | `USER_409_004` | `User status transition is not allowed` | `PLANNED` |
 | `SELF_DEACTIVATION_NOT_ALLOWED` | `409` | `USER_409_005` | `Administrator cannot deactivate own account` | `PLANNED` |
 | `ROLE_NOT_FOUND` | `404` | `ROLE_404_001` | `Role not found` | Đã dùng bởi API đăng ký |
@@ -799,7 +802,7 @@ Tên DTO có thể điều chỉnh theo convention package, nhưng field và JSO
 - [ ] Implement login.
 - [ ] Implement get current user.
 - [ ] Implement update current user.
-- [ ] Implement change password.
+- [x] Implement change password.
 
 ### Admin
 
