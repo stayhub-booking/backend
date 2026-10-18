@@ -66,7 +66,13 @@ public enum ErrorCode {
   SELF_ROLE_ASSIGNMENT_FORBIDDEN(
       HttpStatus.FORBIDDEN,
       "ROLE_403_001",
-      "Administrators cannot assign the HOTEL_OWNER role to themselves");
+      "Administrators cannot assign the HOTEL_OWNER role to themselves"),
+  INVALID_PASSWORD_RESET_TOKEN(
+      HttpStatus.BAD_REQUEST, "AUTH_400_001", "Password reset token is invalid or expired"),
+
+  PASSWORD_CONFIRMATION_MISMATCH(
+      HttpStatus.BAD_REQUEST, "AUTH_400_002", "Password confirmation does not match"),
+  ;
 
   private final HttpStatus httpStatus;
   private final String code;

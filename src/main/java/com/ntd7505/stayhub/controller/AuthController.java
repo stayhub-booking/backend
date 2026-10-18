@@ -1,13 +1,16 @@
 package com.ntd7505.stayhub.controller;
 
+import com.ntd7505.stayhub.dto.request.ForgotPasswordRequest;
 import com.ntd7505.stayhub.dto.request.LoginRequest;
 import com.ntd7505.stayhub.dto.request.RefreshTokenRequest;
+import com.ntd7505.stayhub.dto.request.ResetPasswordRequest;
 import com.ntd7505.stayhub.dto.request.UserRegisterRequest;
 import com.ntd7505.stayhub.dto.response.auth.AuthenticationResponse;
 import com.ntd7505.stayhub.dto.response.common.ApiResponse;
 import com.ntd7505.stayhub.dto.response.user.UserResponse;
 import com.ntd7505.stayhub.enums.ResponseCode;
 import com.ntd7505.stayhub.service.AuthService;
+import com.ntd7505.stayhub.service.PasswordResetService;
 import com.ntd7505.stayhub.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import jakarta.validation.Valid;
@@ -27,6 +30,7 @@ public class AuthController {
 
   private final UserService userService;
   private final AuthService authService;
+  private final PasswordResetService passwordResetService;
 
   @PostMapping("/register")
   public ResponseEntity<ApiResponse<UserResponse>> register(
@@ -54,5 +58,24 @@ public class AuthController {
     return ResponseEntity.ok()
         .header("Cache-Control", "no-store")
         .body(ApiResponse.success(ResponseCode.SUCCESS, result));
+  }
+
+  @PostMapping("/password/forgot")
+  public ResponseEntity<ApiResponse<Void>> forgotPassword(
+      @Valid @RequestBody ForgotPasswordRequest request) {
+
+    passwordResetService.requestPasswordReset(request);
+
+    return ResponseEntity.status(HttpStatus.ACCEPTED)
+        .body(ApiResponse.success(ResponseCode.PASSWORD_RESET_REQUEST_ACCEPTED, null));
+  }
+
+  @PostMapping("/password/reset")
+  public ResponseEntity<ApiResponse<Void>> resetPassword(
+      @Valid @RequestBody ResetPasswordRequest request) {
+
+    passwordResetService.resetPassword(request);
+
+    return ResponseEntity.ok(ApiResponse.success(ResponseCode.PASSWORD_RESET_COMPLETED, null));
   }
 }

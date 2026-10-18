@@ -41,7 +41,14 @@ public enum ResponseCode {
   ROOM_TYPE_UPDATED(HttpStatus.OK, "ROOM_200_003", "Room type updated successfully"),
   ROOM_TYPE_STATUS_UPDATED(HttpStatus.OK, "ROOM_200_004", "Room type status updated successfully"),
   ROOM_TYPE_AMENITIES_UPDATED(
-      HttpStatus.OK, "ROOM_200_005", "Room type amenities updated successfully");
+      HttpStatus.OK, "ROOM_200_005", "Room type amenities updated successfully"),
+  PASSWORD_RESET_REQUEST_ACCEPTED(
+      HttpStatus.ACCEPTED,
+      "AUTH_202_001",
+      "If the account exists, password reset instructions will be sent"),
+
+  PASSWORD_RESET_COMPLETED(HttpStatus.OK, "AUTH_200_002", "Password reset successfully"),
+  ;
 
   private final HttpStatus httpStatus;
   private final String code;
