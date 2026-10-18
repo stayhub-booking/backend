@@ -7,6 +7,22 @@ spring:
     url: ${DB_URL}
     username: ${DB_USER}
     password: ${DB_PASSWORD}
+
+  mail:
+    host: ${MAIL_HOST:localhost}
+    port: ${MAIL_PORT:1025}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    default-encoding: UTF-8
+
+    properties:
+      "[mail.smtp.auth]": ${MAIL_SMTP_AUTH:false}
+      "[mail.smtp.starttls.enable]": ${MAIL_STARTTLS:false}
+      "[mail.smtp.starttls.required]": ${MAIL_STARTTLS:false}
+      "[mail.smtp.connectiontimeout]": 5000
+      "[mail.smtp.timeout]": 5000
+      "[mail.smtp.writetimeout]": 5000
+
   jpa:
     open-in-view: false
     show-sql: false
@@ -32,6 +48,15 @@ app:
     cookie-name: jwt-token
     cookie-http-only: true
     cookie-secure: true                   # mặc định an toàn
+
+  mail:
+    from: ${MAIL_FROM:no-reply@stayhub.local}
+
+  frontend:
+    reset-password-url: ${FRONTEND_RESET_PASSWORD_URL:http://localhost:3000/reset-password}
+
+  password-reset:
+    token-ttl: ${PASSWORD_RESET_TOKEN_TTL:15m}
 
 springdoc:
   api-docs:
